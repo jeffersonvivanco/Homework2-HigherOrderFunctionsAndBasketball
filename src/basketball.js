@@ -3,7 +3,7 @@
  */
 var request = require('request');
 
-request('https://foureyes.github.io/csci-ua.0480-fall2016-001/homework/02/0021500750.json', function (error, response, body) {
+request('https://foureyes.github.io/csci-ua.0480-fall2016-001/homework/02/0021500750.json', function callback(error, response, body) {
     // just print out the first 30 characters of the response body
     var gameData = JSON.parse(body);
 
@@ -164,7 +164,10 @@ request('https://foureyes.github.io/csci-ua.0480-fall2016-001/homework/02/002150
         return string;
     };
     console.log(stringOfTurnovers());
+    if(gameData.next != ""){
+        request(gameData.next,callback);
 
+    }
 
     //------------------------------------------------------------------------------------------------//
 
