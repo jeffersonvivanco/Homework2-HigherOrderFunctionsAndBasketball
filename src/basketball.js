@@ -7,26 +7,52 @@ var stringV = gameData.arena;
 var gameId = "Game ID: "+gameData.id;
 
 var players = gameData.players; //All the players in the team
+var teamObject  = function (name) {
+  return {name : name, players:[], finalscore: 0, totalFreeThrowsAttempted:0};
+};
+var teamName = [];
+var teamObjects = [];
+for(var i=0; i<players.length; i++){
+    if(teamName.indexOf(players[i].team_name)<0){
+        teamName.push(players[i].team_name);
+    }
+}
+for(var c=0; c<teamName.length; c++){
+    var team  = teamObject(teamName[c]);
+    teamObjects.push(team);
+}
+for(var d=0; d<teamObjects.length; d++){
+    for(var f=0; f<players.length; f++){
+        if(teamObjects[d].name === players[f].team_name){
+            teamObjects[d].players.push(players[f]);
+        }
+    }
+}
 
 //------------------------------------Getting total points for each team-------------------------//
-var pacersFinalScore  = 0;
-var hawksFinalScore = 0;
-function filterByTeam(player) {
-    if(player.team_name === "Hawks"){
-        var twoPointFGH = (parseInt(player.field_goals_made) - parseInt(player.three_pointers_made))*2;
-        hawksFinalScore = hawksFinalScore + parseInt(player.three_pointers_made)*3+parseInt(player.free_throws_made)+twoPointFGH;
-        return true;
+// var pacersFinalScore  = 0;
+// var hawksFinalScore = 0;
+function filterByTeam(team) {
+    var FinalScore = 0;
+    for(var f=0; f<team.players.length; f++){
+        var twoPointFGH = (parseInt(team.players[f].field_goals_made) - parseInt(team.players[f].three_pointers_made))*2;
+        FinalScore = FinalScore + parseInt(team.players[f].three_pointers_made)*3+parseInt(team.players[f].free_throws_made)+twoPointFGH;
     }
-    else if(player.team_name === "Pacers"){
-        var twoPointFGP = (parseInt(player.field_goals_made) - parseInt(player.three_pointers_made))*2;
-        pacersFinalScore = pacersFinalScore + parseInt(player.three_pointers_made)*3+parseInt(player.free_throws_made)+twoPointFGP;
-        return true;
-    }
-    else
-        return false;
+    team.finalscore = FinalScore;
+
+    return true;
+
+
+
 }
-var teamFilter = players.filter(filterByTeam);
-console.log("Pacers: "+pacersFinalScore+"\nHawks: "+hawksFinalScore+"\n");//Printing final score of Pacers and Hawks
+for(var y=0; y<teamObjects.length; y++){
+    var teamFilter = teamObjects.filter(filterByTeam);
+}
+var finalScores = "";
+for(var a=0; a<teamObjects.length; a++){
+    finalScores = finalScores+teamObjects[a].name+": "+teamObjects[a].finalscore+"\n";
+}
+console.log(finalScores);
 //------------------------------------------------------------------------------------------------//
 
 //------------------------------------Player with the most rebounds-------------------------//
@@ -79,8 +105,47 @@ function getPlayersWithAtleastOneAssist(player) {
         numOfPlayersWithAtleastOneAssist++;
 }
 var playersWithAtLeastOneAssist = players.forEach(getPlayersWithAtleastOneAssist);
-console.log("There were "+numOfPlayersWithAtleastOneAssist +" players that had at least one assist")
+console.log("There were "+numOfPlayersWithAtleastOneAssist +" players that had at least one assist.");
 //------------------------------------------------------------------------------------------------//
 
+//------------------------------------Team that attempted the most free throws-------------------------//
 
-// console.log(players);
+function getFreeThrowsAttempted(team) {
+    var totalAFreeThrows = 0;
+    for(var x=0; x<team.players.length; x++){
+        totalAFreeThrows = totalAFreeThrows + parseInt(player.free_throws_attempted);
+    }
+
+
+}
+var addAttemptedFreeThrows = teamObjects.map(getFreeThrowsAttempted);
+var mostAFreeThrows = Math.max(totalAFreeThrowsHawks,totalAFreeThrowsPacers);
+var teamWithMostAFT;
+if(totalAFreeThrowsPacers === mostAFreeThrows){
+    teamWithMostAFT = "Pacers";
+}
+else{
+    teamWithMostAFT = "Hawks";
+}
+console.log("* "+teamWithMostAFT+" attempted the most free throws... Pacers: "+totalAFreeThrowsPacers+" Hawks: "+totalAFreeThrowsHawks);
+
+//------------------------------------------------------------------------------------------------//
+
+//------------------------------------Players with more turnovers than assists-------------------------//
+function getTeamPacersWithTurnOversMoreThanAssists(player){
+    if(player.team_name === "Pacers" && (parseInt(player.turnovers) > parseInt(player.assists))){
+        return true;
+    }
+    else
+        return false;
+}
+function getTeamHawksWithTurnOversMoreThanAssists(player){
+    if(player.team_name ==="Hawks" && (parseInt(player.turnovers) > parseInt(player.assists))){
+        return true;
+    }
+    else
+        return false;
+}
+
+//------------------------------------------------------------------------------------------------//
+// console.log(players.filter(getTeamHawksWithTurnOversMoreThanAssists));
