@@ -9,7 +9,7 @@ request('https://foureyes.github.io/csci-ua.0480-fall2016-001/homework/02/002150
 
 
     var gameId = "Game ID: "+gameData.id;
-
+    console.log(gameId+"\n=====");
     var players = gameData.players; //All the players in the team
     var teamObject  = function (name) {
       return {name : name, players:[], finalscore: 0, totalFreeThrowsAttempted:0, playersWithMoreTurnOversThanAssists : []};
@@ -109,7 +109,7 @@ request('https://foureyes.github.io/csci-ua.0480-fall2016-001/homework/02/002150
             numOfPlayersWithAtleastOneAssist++;
     }
     var playersWithAtLeastOneAssist = players.forEach(getPlayersWithAtleastOneAssist);
-    console.log("There were "+numOfPlayersWithAtleastOneAssist +" players that had at least one assist.");
+    console.log("* There were "+numOfPlayersWithAtleastOneAssist +" players that had at least one assist.");
     //------------------------------------------------------------------------------------------------//
 
     //------------------------------------Team that attempted the most free throws-------------------------//
@@ -135,7 +135,7 @@ request('https://foureyes.github.io/csci-ua.0480-fall2016-001/homework/02/002150
     var stringMostFreeThrows = function(){
         var string = "";
         for(var i=0; i<teamObjects.length; i++){
-            string  = string+teamObjects[i].name +" "+teamObjects[i].totalFreeThrowsAttempted+"  ";
+            string  = string+teamObjects[i].name +": "+teamObjects[i].totalFreeThrowsAttempted+"  ";
         }
         return string;
     };
@@ -156,9 +156,11 @@ request('https://foureyes.github.io/csci-ua.0480-fall2016-001/homework/02/002150
     var stringOfTurnovers = function () {
         var string ="";
         for(var i=0; i<teamObjects.length; i++){
-            string = string + teamObjects[i].name+" players with more turnovers than assists\n";
+            string = string + "* "+teamObjects[i].name+" players with more turnovers than assists\n";
             for(var x=0; x<teamObjects[i].playersWithMoreTurnOversThanAssists.length; x++){
-                string  = string+teamObjects[i].playersWithMoreTurnOversThanAssists[x].first_name+"\n";
+                string  = string+"  * "+teamObjects[i].playersWithMoreTurnOversThanAssists[x].first_name+
+                    " has an assist to turnover ratio of "+teamObjects[i].playersWithMoreTurnOversThanAssists[x].assists+
+                    ":"+teamObjects[i].playersWithMoreTurnOversThanAssists[x].turnovers+"\n";
             }
         }
         return string;
