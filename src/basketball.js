@@ -8,7 +8,7 @@ var gameId = "Game ID: "+gameData.id;
 
 var players = gameData.players; //All the players in the team
 var teamObject  = function (name) {
-  return {name : name, players:[], finalscore: 0, totalFreeThrowsAttempted:0};
+  return {name : name, players:[], finalscore: 0, totalFreeThrowsAttempted:0, playersWithMoreTurnOversThanAssists : []};
 };
 var teamName = [];
 var teamObjects = [];
@@ -141,20 +141,27 @@ console.log("* "+teamWithGreatestFreeThrowsAttempted().name+" attempted the most
 //------------------------------------------------------------------------------------------------//
 
 //------------------------------------Players with more turnovers than assists-------------------------//
-function getTeamPacersWithTurnOversMoreThanAssists(player){
-    if(player.team_name === "Pacers" && (parseInt(player.turnovers) > parseInt(player.assists))){
-        return true;
+function compute(team) {
+    for(var i=0; i<team.players.length; i++){
+        if(team.players[i].turnovers > team.players[i].assists){
+            team.playersWithMoreTurnOversThanAssists.push(team.players[i]);
+        }
     }
-    else
-        return false;
 }
-function getTeamHawksWithTurnOversMoreThanAssists(player){
-    if(player.team_name ==="Hawks" && (parseInt(player.turnovers) > parseInt(player.assists))){
-        return true;
+teamObjects.forEach(compute);
+var stringOfTurnovers = function () {
+    var string ="";
+    for(var i=0; i<teamObjects.length; i++){
+        string = string + teamObjects[i].name+" players with more turnovers than assists\n";
+        for(var x=0; x<teamObjects[i].playersWithMoreTurnOversThanAssists.length; x++){
+            string  = string+teamObjects[i].playersWithMoreTurnOversThanAssists[x].first_name+"\n";
+        }
     }
-    else
-        return false;
-}
+    return string;
+};
+console.log(stringOfTurnovers());
+
 
 //------------------------------------------------------------------------------------------------//
-// console.log(players.filter(getTeamHawksWithTurnOversMoreThanAssists));
+// console.log(gameData);
+// console.log(teamObjects[0].playersWithMoreTurnOversThanAssists[0]);
