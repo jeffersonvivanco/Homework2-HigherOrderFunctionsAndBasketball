@@ -113,21 +113,30 @@ console.log("There were "+numOfPlayersWithAtleastOneAssist +" players that had a
 function getFreeThrowsAttempted(team) {
     var totalAFreeThrows = 0;
     for(var x=0; x<team.players.length; x++){
-        totalAFreeThrows = totalAFreeThrows + parseInt(player.free_throws_attempted);
+        totalAFreeThrows = totalAFreeThrows + parseInt(team.players[x].free_throws_attempted);
     }
-
+    team.totalFreeThrowsAttempted = totalAFreeThrows;
 
 }
 var addAttemptedFreeThrows = teamObjects.map(getFreeThrowsAttempted);
-var mostAFreeThrows = Math.max(totalAFreeThrowsHawks,totalAFreeThrowsPacers);
-var teamWithMostAFT;
-if(totalAFreeThrowsPacers === mostAFreeThrows){
-    teamWithMostAFT = "Pacers";
-}
-else{
-    teamWithMostAFT = "Hawks";
-}
-console.log("* "+teamWithMostAFT+" attempted the most free throws... Pacers: "+totalAFreeThrowsPacers+" Hawks: "+totalAFreeThrowsHawks);
+var teamWithGreatestFreeThrowsAttempted = function(){
+    var team = teamObjects[0];
+    for(var h=0; h<teamObjects.length; h++){
+        if(teamObjects[h].totalFreeThrowsAttempted>team.totalFreeThrowsAttempted){
+            team = teamObjects[h];
+        }
+    }
+    return team;
+};
+var stringMostFreeThrows = function(){
+    var string = "";
+    for(var i=0; i<teamObjects.length; i++){
+        string  = string+teamObjects[i].name +" "+teamObjects[i].totalFreeThrowsAttempted+"  ";
+    }
+    return string;
+};
+
+console.log("* "+teamWithGreatestFreeThrowsAttempted().name+" attempted the most free throws, "+stringMostFreeThrows());
 
 //------------------------------------------------------------------------------------------------//
 
